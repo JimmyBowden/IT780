@@ -1,0 +1,26 @@
+#Jimmy Bowden
+#IT780
+#C6.py
+
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+
+html = urlopen("http://cs.unh.edu/~anarayan/Scraping/Navigation.html")
+#soup = BeautifulSoup(response.text, "lxml")
+bsObj = BeautifulSoup(html, "html.parser")
+
+
+
+def parseTable():
+    for child in bsObj.find("table",{"id" : "giftList"}).children:
+        for grandChild in child:
+            if grandChild.find("$") == -1:
+                print(grandChild)
+
+    #print(bsObj.find(id = "giftlist"))
+
+#Print Table
+#print(myTable.get_Text())
+
+#print("Page Title: ", soup.title)
+parseTable()
