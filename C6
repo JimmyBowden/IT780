@@ -12,15 +12,15 @@ bsObj = BeautifulSoup(html, "html.parser")
 
 
 def parseTable():
-    for child in bsObj.find("table",{"id" : "giftList"}).children:
-        for grandChild in child:
-            if grandChild.find("$") == -1:
-                print(grandChild)
-
-    #print(bsObj.find(id = "giftlist"))
-
-#Print Table
-#print(myTable.get_Text())
-
-#print("Page Title: ", soup.title)
+    giftTable = bsObj.find("table",{"id" : "giftList"})
+    row = giftTable.findAll("td")
+    count = 0
+    for line in row:
+        if "$" in line.text:
+            cash = str(line.text).strip()
+            cash = cash.replace("$", "")
+            cash = cash.replace(",", "")
+            count = count + float(cash)
+    print(count)
+    
 parseTable()
