@@ -20,22 +20,63 @@ def manhattan(rating1, rating2):
         return -1 #Indicates no ratings in common
 
 
-def computeNearestNeighbor(username, users):
+def minkowski(rating1, rating2, r):
+    distance = 0
+    commonRatings = False 
+    for key in rating1:
+        if key in rating2:
+            distance += pow((abs(float(rating1[key]) - float(rating2[key]))), r)
+            commonRatings = True
+    if commonRatings:
+        distance = pow(distance,(1/r))
+        return distance
+    else:
+        return -1 #Indicates no ratings in common
+
+
+def euclidean(rating1, rating2):
+    distance = 0
+    commonRatings = False 
+    for key in rating1:
+        if key in rating2:
+            distance += (rating1[key] - rating2[key]) ** 2
+            commonRatings = True
+    if commonRatings:
+        distance = sqrt(distance)
+        return distance
+    else:
+        return -1 #Indicates no ratings in common
+
+
+def computeNearestNeighbor(username, users, *r):
     """creates a sorted list of users based on their distance to username"""
     distances = []
     for user in users:
         if user != username:
-            distance = manhattan(users[user], users[username])
+            #print(user)
+            #distance = euclidean(users[user], users[username])
+            if r:
+                distance = minkowski(users[user], users[username], r[0])
+            else:
+                print("test")
+                pearsonNum = pearson(username, users)
+                print(pearsonNum)
+                distance = minkowski(users[user], users[username], pearsonNum)
+            
             distances.append((distance, user))
     # sort based on distance -- closest first
     distances.sort()
     return distances
 
-def recommend(username, users):
+def recommend(username, users, *r):
     """Give list of recommendations"""
     # first find nearest neighbor
-    nearest = computeNearestNeighbor(username, users)[0][1]
-
+    if r:
+        nearest = computeNearestNeighbor(username, users, r[0])[0][1]
+    else:
+        print("test")
+        pearsonNum = pearson(username, users)
+        nearest = computeNearestNeighbor(username, users, pearsonNum)[0][1]
     recommendations = []
     # now find bands neighbor rated that user didn't
     neighborRatings = users[nearest]
@@ -75,11 +116,29 @@ def pearson(rating1, rating2):
         return (sum_xy - (sum_x * sum_y) / n) / denominator
 
 
-
     #-----------------------------Main---------------------------------
 dictList = C4.readNameCSV()
 myDict = C4.readRatingCSV(dictList)
-#print(myDict)
+myInput = input("Enter a name: ")
 
-test = computeNearestNeighbor("Simone", myDict)
-print(test)
+manTest1 = computeNearestNeighbor(myInput, myDict, 1)
+manTest2 = recommend(myInput, myDict, 1)
+print("Manhattan:")
+print("Nearest Neighhbors: ", manTest1)
+print("Recommendations: ", manTest2)
+print("")
+
+euTest1 = computeNearestNeighbor(myInput, myDict, 2)
+euTest2 = recommend(myInput, myDict, 2)
+print("Eucledian:")
+print("Nearest Neighhbors: ", euTest1)
+print("Recommendations: ", euTest2)
+print("")
+
+pearTest1 = computeNearestNeighbor(myInput, myDict)
+pearTest2 = recommend(myInput, myDict)
+print("Pearson:")
+print("Nearest Neighhbors: ", pearTest1)
+print("Recommendations: ", pearTest2)
+print("")
+
