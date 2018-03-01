@@ -48,35 +48,29 @@ def euclidean(rating1, rating2):
         return -1 #Indicates no ratings in common
 
 
-def computeNearestNeighbor(username, users, *r):
+def computeNearestNeighbor(username, users, r, Pearson = False):
     """creates a sorted list of users based on their distance to username"""
     distances = []
     for user in users:
         if user != username:
-            #print(user)
-            #distance = euclidean(users[user], users[username])
-            if r:
-                distance = minkowski(users[user], users[username], r[0])
+            if Pearson == True:
+                distance = pearson(users[user], users[username])
             else:
-                print("test")
-                pearsonNum = pearson(username, users)
-                print(pearsonNum)
-                distance = minkowski(users[user], users[username], pearsonNum)
+                distance = minkowski(users[user], users[username], r)
+
             
             distances.append((distance, user))
     # sort based on distance -- closest first
-    distances.sort()
+    distances.sort(reverse=Pearson)
     return distances
 
-def recommend(username, users, *r):
+def recommend(username, users, r, Pearson = False):
     """Give list of recommendations"""
     # first find nearest neighbor
-    if r:
-        nearest = computeNearestNeighbor(username, users, r[0])[0][1]
+    if Pearson == True:
+        nearest = computeNearestNeighbor(username, users, r, True)[0][1]
     else:
-        print("test")
-        pearsonNum = pearson(username, users)
-        nearest = computeNearestNeighbor(username, users, pearsonNum)[0][1]
+        nearest = computeNearestNeighbor(username, users, r)[0][1]
     recommendations = []
     # now find bands neighbor rated that user didn't
     neighborRatings = users[nearest]
@@ -119,7 +113,7 @@ def pearson(rating1, rating2):
     #-----------------------------Main---------------------------------
 dictList = C4.readNameCSV()
 myDict = C4.readRatingCSV(dictList)
-myInput = input("Enter a name: ")
+myInput = input("Enter a name: ").capitalize()
 
 manTest1 = computeNearestNeighbor(myInput, myDict, 1)
 manTest2 = recommend(myInput, myDict, 1)
@@ -135,10 +129,11 @@ print("Nearest Neighhbors: ", euTest1)
 print("Recommendations: ", euTest2)
 print("")
 
-pearTest1 = computeNearestNeighbor(myInput, myDict)
-pearTest2 = recommend(myInput, myDict)
+pearTest1 = computeNearestNeighbor(myInput, myDict, 1, True)
+pearTest2 = recommend(myInput, myDict, 1, True)
 print("Pearson:")
 print("Nearest Neighhbors: ", pearTest1)
 print("Recommendations: ", pearTest2)
 print("")
+
 
