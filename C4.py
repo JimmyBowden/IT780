@@ -26,17 +26,22 @@ def readRatingCSV(nameList):
     myRatingDict = {}
     myFinalDict = {}
     for item in nameList:
-        myFinalDict[item] = {item : {}}
+        myFinalDict[item] = {}
     #print(myFinalDict)
     fName = 'Ratings.csv'
     with open(fName, 'r') as inFile:
         line = inFile.readline()
+        count = 0
         while line != "":
             ratingList  = line.split(",")
-            myFinalDict[ratingList[1]] = {ratingList[0] : ratingList[2].strip()}
+            val = ratingList[2].strip()
+            myFinalDict[ratingList[1]][ratingList[0]] = float(val)
+            #myFinalDict[ratingList[1]] ({ratingList[0] : float(val)})
             #print(ratingList[0], ratingList[2])
            #myList.append(nameList[0])
             line = inFile.readline()
+            count = count + 1
+    #print(count)
     return myFinalDict
 
 def orderDictionary(myDict):
@@ -51,5 +56,5 @@ def orderDictionary(myDict):
 #-----------------Main
 dictList = readNameCSV()
 myDict = readRatingCSV(dictList)
-sortedDictList = orderDictionary(myDict)
-print(sortedDictList)
+#sortedDictList = orderDictionary(myDict)
+#Sprint(myDict)
