@@ -57,4 +57,4 @@ def orderDictionary(myDict):
 dictList = readNameCSV()
 myDict = readRatingCSV(dictList)
 #sortedDictList = orderDictionary(myDict)
-#Sprint(myDict)
+#print(myDict)
