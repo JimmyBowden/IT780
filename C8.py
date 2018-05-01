@@ -8,7 +8,7 @@ class myRecommender:
     def __init__(self):
         from math import sqrt
 
-    def manhattan(rating1, rating2):
+    def manhattan(self, rating1, rating2):
         """Computes the Manhattan distance. Both rating1 and rating2 are dictionaries
         """
         distance = 0
@@ -23,7 +23,7 @@ class myRecommender:
             return -1 #Indicates no ratings in common
 
 
-    def minkowski(rating1, rating2, r):
+    def minkowski(self, rating1, rating2, r):
         distance = 0
         commonRatings = False 
         for key in rating1:
@@ -37,7 +37,7 @@ class myRecommender:
             return -1 #Indicates no ratings in common
 
 
-    def euclidean(rating1, rating2):
+    def euclidean(self, rating1, rating2):
         distance = 0
         commonRatings = False 
         for key in rating1:
@@ -51,15 +51,16 @@ class myRecommender:
             return -1 #Indicates no ratings in common
 
 
-    def computeNearestNeighbor(username, users, r, Pearson = False):
+    def computeNearestNeighbor(self, username, users, r, Pearson = False):
         """creates a sorted list of users based on their distance to username"""
         distances = []
         for user in users:
             if user != username:
                 if Pearson == True:
-                    distance = pearson(users[user], users[username])
+                    #print(user)
+                    distance = self.pearson(users[user], users[username])
                 else:
-                    distance = minkowski(users[user], users[username], r)
+                    distance = self.minkowski(users[user], users[username], r)
 
                 
                 distances.append((distance, user))
@@ -67,13 +68,13 @@ class myRecommender:
         distances.sort(reverse=Pearson)
         return distances
 
-    def recommend(username, users, r, Pearson = False):
+    def recommend(self, username, users, r, Pearson = False):
         """Give list of recommendations"""
         # first find nearest neighbor
         if Pearson == True:
-            nearest = computeNearestNeighbor(username, users, r, True)[0][1]
+            nearest = self.computeNearestNeighbor(username, users, r, True)[0][1]
         else:
-            nearest = computeNearestNeighbor(username, users, r)[0][1]
+            nearest = self.computeNearestNeighbor(username, users, r)[0][1]
         recommendations = []
         # now find bands neighbor rated that user didn't
         neighborRatings = users[nearest]
@@ -81,11 +82,12 @@ class myRecommender:
         for artist in neighborRatings:
             if not artist in userRatings:
                 recommendations.append((artist, neighborRatings[artist]))
+                #print(recommendations)
         # using the fn sorted for variety - sort is more efficient
         return sorted(recommendations, key=lambda artistTuple: artistTuple[1], reverse = True)
 
 
-    def pearson(rating1, rating2):
+    def pearson(self, rating1, rating2):
         sum_xy = 0
         sum_x = 0
         sum_y = 0
@@ -113,7 +115,7 @@ class myRecommender:
             return (sum_xy - (sum_x * sum_y) / n) / denominator
 
 
-    def mainRun():
+    def mainRun(self):
         dictList = C4.readNameCSV()
         myDict = C4.readRatingCSV(dictList)
         myInput = input("Enter a name: ").capitalize()
