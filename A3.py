@@ -54,14 +54,23 @@ def readRatingCSV():
 
 
 #------------------------------------Main
-myInput = input("Enter Name: ").capitalize() #276746
+print("")
+print("Reading from book data set...")
 bookDict = readBookCSV()
 #print(bookDict)
 ratingDict = readRatingCSV()
 #print(ratingDict)
 print("Recommendations using Pearson:")
-rec = myRecommender().recommend(myInput, ratingDict, 2, True)
-#print(rec)
-#for item in rec:
-#    print(item[0], item[1])
-#    print(item[0], "--->", bookDict[item[0]], "--->",item[1] )
+myInput = input("Enter Name or Exit <<Exit>>: ").capitalize()
+while myInput != "Exit":
+    rec = myRecommender().recommend(float(myInput), ratingDict, 1, True)
+    #print(rec)
+    count = 0
+    for item in rec:
+        #print(item[0], item[1])
+        print(item[0], "--->", bookDict[item[0]], "--->",item[1] )
+        count += 1
+        if count == 20:
+            break
+    print("")
+    myInput = input("Enter Name or Exit <<Exit>>: ").capitalize()
